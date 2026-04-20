@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { setLoggedIn } from "../utils/auth";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -34,11 +35,12 @@ export default function Login() {
             throw new Error(data.message);
         }
 
-        // ✅ No need to store token manually (cookie already stored)
+        setLoggedIn(true);
 
-        navigate("/dashboard");
+        navigate("/");
 
     } catch (err) {
+        setLoggedIn(false);
         setError(err.message);
     }
 };
