@@ -9,17 +9,40 @@ export default function Login() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-        if (!email || !password) {
-            setError("Please fill in all details.");
-            return;
+    if (!email || !password) {
+        setError("Please fill in all details.");
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include", // 🔥 VERY IMPORTANT (for cookies)
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message);
         }
 
+        // ✅ No need to store token manually (cookie already stored)
+
         navigate("/dashboard");
-    };
+
+    } catch (err) {
+        setError(err.message);
+    }
+};
+
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center px-2">
